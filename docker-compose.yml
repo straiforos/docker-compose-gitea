@@ -1,42 +1,45 @@
-version: '2'
-volumes:
-  app:
-  db:
+version: "3"
+
 services:
-  app:
-    container_name: gitea-app
-    restart: always
-    image: gitea/gitea:${GITEA_VERSION}
-    links:
-      - db:mysql
-    volumes:
-      - ./volumes/gitea_app:/data
-    ports:
-      - "${GITEA_SSH_PORT}:22"
-      - "${GITEA_WEB_PORT}:3000"
-    environment:
-      - VIRTUAL_PORT=3000
-      - VIRTUAL_HOST=${GITEA_HOSTNAME}
-    networks:
-      - backend
-      - frontend
-  db:
+  gitea-db:
+    image: postgres:13
     container_name: gitea-db
-    restart: always
-    image: mysql:8.0
-    #security_opt:
-    #  - seccomp:unconfined
-    cap_add: [ SYS_NICE ]
-    volumes:
-      - ./volumes/gitea_db:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - gitea-db-data:/var/lib/postgresql/data
     networks:
-      - backend
+      - gitea-network
+
+  gitea:
+    image: gitea/gitea:latest
+    container_name: gitea
+    environment:
+      - USER_UID=${USER_UID}
+      - USER_GID=${USER_GID}
+      - DB_TYPE=${DB_TYPE}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWD=${DB_PASSWD}
+      - GITEA__server__ROOT_URL=${ROOT_URL}
+    volumes:
+      - gitea-data:/data
+    ports:
+      - "3000:3000"
+    depends_on:
+      - gitea-db
+    networks:
+      - gitea-network
+
+volumes:
+  gitea-db-data:
+    driver: local
+  gitea-data:
+    driver: local
 
 networks:
-  frontend:
-  backend:
+  gitea-network:
+    driver: bridge
