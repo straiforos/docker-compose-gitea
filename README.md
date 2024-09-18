@@ -24,6 +24,7 @@ Data will be saved in separate Docker volumes to enable easy upgrades!
     DB_USER=gitea
     DB_PASSWD=gitea
     ROOT_URL=http://localhost:3000/
+    RUNNER_REGISTRATION_TOKEN=xyz123etc
     ```
 
 2. Start the Docker containers:
@@ -54,6 +55,7 @@ Data will be saved in separate Docker volumes to enable easy upgrades!
 | DB_USER               | Gitea database user               |gitea          |
 | DB_PASSWD             | Gitea database password           |gitea          |
 | ROOT_URL              | Gitea root URL                    |http://localhost:3000/ |
+| RUNNER_REGISTRATION_TOKEN | Gitea runner registration token |               |
 
 ## Create systemd unit
 
