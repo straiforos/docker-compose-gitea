@@ -36,10 +36,23 @@ services:
 
   gitea-runner:
     image: gitea/act_runner:latest
-    container_name: gitea-runner
+    container_name: gitea-runner-1
     environment:
       - GITEA_INSTANCE_URL=${ROOT_URL}
-      - GITEA_RUNNER_REGISTRATION_TOKEN=${RUNNER_REGISTRATION_TOKEN}
+      - GITEA_RUNNER_REGISTRATION_TOKEN=${RUNNER_REGISTRATION_TOKEN_1}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - gitea
+    networks:
+      - gitea-network
+
+  gitea-runner-2:
+    image: gitea/act_runner:latest
+    container_name: gitea-runner-2
+    environment:
+      - GITEA_INSTANCE_URL=${ROOT_URL}
+      - GITEA_RUNNER_REGISTRATION_TOKEN=${RUNNER_REGISTRATION_TOKEN_2}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:

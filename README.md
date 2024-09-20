@@ -24,7 +24,8 @@ Data will be saved in separate Docker volumes to enable easy upgrades!
     DB_USER=gitea
     DB_PASSWD=gitea
     ROOT_URL=http://localhost:3000/
-    RUNNER_REGISTRATION_TOKEN=xyz123etc
+    RUNNER_REGISTRATION_TOKEN_1=xyz123etc
+    RUNNER_REGISTRATION_TOKEN_2=abc456etc
     ```
 
 2. Start the Docker containers:
@@ -42,8 +43,8 @@ Data will be saved in separate Docker volumes to enable easy upgrades!
 
 ### Environment Configuration
 
-| VARIABLE              | Description                       | DEFAULT       |
-| ----------------------|-----------------------------------|:-------------:|               
+| VARIABLE                   | Description                       | DEFAULT       |
+|----------------------------|-----------------------------------|:-------------:|
 | POSTGRES_DB           | PostgreSQL database name          |gitea          |
 | POSTGRES_USER         | PostgreSQL database user          |gitea          |
 | POSTGRES_PASSWORD     | PostgreSQL database password      |gitea          |
@@ -55,7 +56,8 @@ Data will be saved in separate Docker volumes to enable easy upgrades!
 | DB_USER               | Gitea database user               |gitea          |
 | DB_PASSWD             | Gitea database password           |gitea          |
 | ROOT_URL              | Gitea root URL                    |http://localhost:3000/ |
-| RUNNER_REGISTRATION_TOKEN | Gitea runner registration token |               |
+| RUNNER_REGISTRATION_TOKEN_1| Gitea runner 1 registration token |               |
+| RUNNER_REGISTRATION_TOKEN_2| Gitea runner 2 registration token |               |
 
 ## Create systemd unit
 
