@@ -60,6 +60,24 @@ services:
     networks:
       - gitea-network
 
+  gitea-backup:
+    image: ubuntu:latest
+    container_name: gitea-backup
+    env_file:
+      - .env
+    volumes:
+      - gitea-db-data:/backup/gitea-db-data:ro
+      - gitea-data:/backup/gitea-data:ro
+      - ./gitea-data-sync.sh:/gitea-data-sync.sh
+      - ./backups:/backups
+      - ${SSH_KEY_PATH}:${SSH_KEY_PATH}
+      - ./backup-setup.sh:/backup-setup.sh
+    environment:
+      - BACKUP_CRON_SCHEDULE=${BACKUP_CRON_SCHEDULE:-*/2 * * * *}
+    command: ["/bin/bash", "/backup-setup.sh"]
+    networks:
+      - gitea-network
+
 volumes:
   gitea-db-data:
     driver: local

@@ -76,4 +76,80 @@ Data will be saved in separate Docker volumes to enable easy upgrades!
     systemctl enable docker-gitea
     ```
 
-This updated `README.md` now reflects the PostgreSQL setup and the `.env` file usage. Let me know if you'd like further modifications!
+## Backing Up Gitea Data
+
+This setup includes a script to backup Gitea data to an rsync.net account. This is separate from the database backup, which is handled by the cron-backups repository and scripts.
+
+### Setup
+
+1. Ensure you have an rsync.net account.
+
+2. Add the following variables to your `.env` file:
+   ```
+   RSYNC_USERNAME=your_rsync_username
+   RSYNC_SERVER=your_rsync_server
+   SSH_KEY_PATH=/path/to/your/ssh/private/key
+   ```
+
+3. Make sure your SSH public key is added to your rsync.net account.
+
+### Running the Backup
+
+To run the backup manually:
+
+1. Ensure you're in the same directory as the `gitea-data-sync.sh` script.
+2. Run the script:
+   ```bash
+   ./gitea-data-sync.sh
+   ```
+
+This will sync the Gitea data volume to your rsync.net account.
+
+### Automating Backups
+
+To automate the backup process, you can set up a cron job:
+
+1. Open your crontab file:
+   ```bash
+   crontab -e
+   ```
+
+2. Add a line to run the script daily at 2 AM (adjust the time as needed):
+   ```
+   0 2 * * * /path/to/your/gitea-data-sync.sh
+   ```
+
+Remember to replace `/path/to/your/gitea-data-sync.sh` with the actual path to the script.
+
+### Restoring from Backup
+
+To restore from the backup:
+
+1. Stop the Gitea container:
+   ```bash
+   docker-compose stop gitea
+   ```
+
+2. Remove the existing Gitea data volume:
+   ```bash
+   docker volume rm docker-compose-gitea_gitea-data
+   ```
+
+3. Create a new empty volume:
+   ```bash
+   docker volume create docker-compose-gitea_gitea-data
+   ```
+
+4. Use rsync to copy the data from rsync.net to the new volume:
+   ```bash
+   rsync -avz -e ssh your_rsync_username@your_rsync_server:gitea/data/ /var/snap/docker/common/var-lib-docker/volumes/docker-compose-gitea_gitea-data/_data/
+   ```
+
+5. Start the Gitea container:
+   ```bash
+   docker-compose start gitea
+   ```
+
+Note: Adjust the paths as necessary for your specific setup.
+
+This updated `README.md` now reflects the PostgreSQL setup, `.env` file usage, and the addition of backing up Gitea data using the `gitea-data-sync.sh` script.
